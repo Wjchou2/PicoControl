@@ -12,11 +12,35 @@
     body {
         overflow: hidden;
     }
+    #newDrawing {
+        /* align-self: flex-end; */
+        border-style: none;
+        border-radius: 1rem;
+        position: fixed;
+        right: 5%;
+        bottom: 5%;
+        aspect-ratio: 5/2;
+        width: clamp(1px, 30%, 200px);
+        /* height: 15%; */
+        font-size: clamp(1px, 2vw, 100px);
+
+        z-index: 1000;
+        background-color: rgb(40, 144, 40);
+        color: white;
+        padding: 0.7rem;
+        transition: all 0.2s;
+    }
+    #newDrawing:hover {
+        background-color: rgb(71, 160, 71);
+        transform: scale(1.1) rotate(2deg);
+    }
 </style>
 <h1>
     <h1 id="coords">Tap anywhere</h1>
     <canvas id="tap"></canvas>
-    <!-- <button type="button" id="btn" onclick="send()">Send</button> -->
+    <button type="button" id="newDrawing" onclick="newDrawing()">
+        New Drawing
+    </button>
 </h1>
 
 <script>
@@ -27,31 +51,50 @@
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    let points = [];
+    SCALE = 0.25;
+
+    let screenInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+
+    let points = [["New", "New"]];
     let clicked = false;
 
     let lastX = 0;
     let lastY = 0;
     let x,
         y = 0;
+    function addMouseUp() {
+        if (points[points.length - 3] != "False") {
+            points.push(["False", "False"]);
+        }
+    }
+    function newDrawing() {
+        location.reload();
+    }
     canvas.addEventListener("mousedown", (e) => {
         lastX = x;
         lastY = y;
+        addMouseUp();
         clicked = true;
     });
     canvas.addEventListener("mouseup", (e) => {
         e.preventDefault();
         clicked = false;
+        addMouseUp();
     });
     canvas.addEventListener("touchstart", (e) => {
         lastX = x;
         lastY = y;
 
+        addMouseUp();
         clicked = true;
     });
     canvas.addEventListener("touchend", (e) => {
         e.preventDefault();
         clicked = false;
+        addMouseUp();
     });
     canvas.addEventListener("touchmove", (e) => {
         draw(e);
@@ -85,7 +128,7 @@
         lastX = x;
         lastY = y;
 
-        points.push([x, y]);
+        points.push([x / 2, y / 2]);
     }
 
     setInterval(() => {
@@ -101,6 +144,6 @@
             });
             points = [];
         }
-    }, 1000);
+    }, 2500);
     // }
 </script>
